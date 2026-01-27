@@ -1,0 +1,48 @@
+EXPERIMENTO B: Histéresis Manual vs Canny
+============================================================
+
+    1. Intento de encontrar un valor T único:
+       - T muy bajo (T=20-40): Detecta muchos bordes pero también MUCHO RUIDO.
+       - T muy alto (T=100+): Elimina ruido pero ROMPE las líneas de los bordes.
+       - T intermedio (T=60-80): Compromiso, pero los bordes siguen incompletos.
+       
+       CONCLUSIÓN: No existe un T "perfecto" que limpie el ruido Y mantenga
+       todos los bordes conectados.
+
+    2. Observación de resultados:
+       - SÍ, las líneas de los bordes SE ROMPEN con umbral simple.
+       - Los bordes aparecen como segmentos discontinuos.
+       - Zonas donde el gradiente es ligeramente menor que T desaparecen.
+
+    3. PREGUNTA CRÍTICA: ¿Por qué histéresis es superior a umbral simple?
+    
+       El método de HISTÉRESIS usa DOS umbrales (T_alto y T_bajo):
+       - Píxeles con magnitud > T_alto: DEFINITIVAMENTE son bordes.
+       - Píxeles con magnitud < T_bajo: DEFINITIVAMENTE NO son bordes.
+       - Píxeles entre T_bajo y T_alto: Son bordes SOLO SI están CONECTADOS
+         a píxeles que ya son bordes definidos.
+       
+       PROBLEMA QUE RESUELVE LA CONECTIVIDAD:
+       
+       En un robot moviéndose con vibraciones y cambios de iluminación:
+       
+       a) Los bordes reales tienen gradientes que VARÍAN ligeramente a lo largo
+          de su longitud debido a:
+          - Vibraciones mecánicas que causan blur momentáneo
+          - Cambios de iluminación por movimiento
+          - Sombras dinámicas
+          
+       b) Con UMBRAL SIMPLE: Estas variaciones causan que partes del borde
+          caigan debajo del umbral → bordes ROTOS → el robot puede interpretar
+          mal la escena (ej: no detectar que un obstáculo es continuo).
+          
+       c) Con HISTÉRESIS: Si una parte del borde tiene gradiente alto, las
+          partes adyacentes con gradiente "medio" se mantienen conectadas,
+          produciendo bordes CONTINUOS y más CONFIABLES.
+       
+       IMPORTANCIA PARA ROBÓTICA:
+       - Bordes continuos son cruciales para detección de obstáculos.
+       - Un borde roto podría interpretarse como un hueco por donde pasar.
+       - La histéresis proporciona ROBUSTEZ contra perturbaciones temporales.
+       - Mejor para seguimiento de líneas y navegación autónoma.
+    
